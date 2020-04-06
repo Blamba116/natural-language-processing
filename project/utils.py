@@ -46,32 +46,31 @@ def load_embeddings(embeddings_path):
     # Note that here you also need to know the dimension of the loaded embeddings.
     # When you load the embeddings, use numpy.float32 type as dtype
 
-    ########################
-    #### YOUR CODE HERE ####
-    ########################
-
-    # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
-
+    embeddings = {}
+    for line in open(embeddings_path):
+        tmp_emb = line.strip().split('\t')
+        embeddings.update({tmp_emb[0]:np.array(tmp_emb[1:], dtype=np.float32)})
+    embeddings_dim = len(tmp_emb[1:])
+    
+    return embeddings, embeddings_dim
 
 def question_to_vec(question, embeddings, dim):
     """Transforms a string to an embedding by averaging word embeddings."""
 
     # Hint: you have already implemented exactly this function in the 3rd assignment.
 
-    ########################
-    #### YOUR CODE HERE ####
-    ########################
+    tokens = question.split()
+    tokens_emb = []
+    for i in tokens:
+        if i in embeddings:
+            tokens_emb.append(embeddings[i])
 
-    # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
-
+    if tokens_emb != []:
+        question_emb = np.mean(tokens_emb, axis=0)
+    else:
+        question_emb = np.zeros(dim)
+        
+    return question_emb
 
 def unpickle_file(filename):
     """Returns the result of unpickling the file content."""
